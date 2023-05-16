@@ -24,7 +24,7 @@ class AppAlertDialog extends StatelessWidget {
       ),
       content: Text(
         content,
-        style: TextStyles.defaultTextStyle,
+        style: TextStyles.defaultBoldTextStyle,
       ),
       actions: [
         Row(

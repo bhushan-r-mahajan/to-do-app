@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:to_do_app/utils/constants.dart';
 import 'package:to_do_app/view_models/add_task_view_model.dart';
 
 import '../utils/text_styles.dart';
@@ -19,38 +18,32 @@ class SelectDateContainer extends StatelessWidget {
             addTaskViewModel.pickDate(context);
           },
           child: Container(
+            padding: const EdgeInsets.only(top: 10, bottom: 10),
+            alignment: Alignment.centerLeft,
             decoration: BoxDecoration(
-              color: backgroundColor,
-              border: Border.all(
-                width: 1.5,
-                color: addTaskViewModel.invalidDateTime
-                    ? Colors.red.shade700
-                    : Colors.grey,
-              ),
-              borderRadius: BorderRadius.circular(4),
-            ),
-            padding:
-                const EdgeInsets.only(top: 15, bottom: 15, left: 10, right: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  addTaskViewModel.date != null
-                      ? DateFormat('dd/MM/yyyy').format(addTaskViewModel.date!)
-                      : "Date",
-                  style: TextStyles.defaultTextStyle,
+              border: Border(
+                bottom: BorderSide(
+                  color: addTaskViewModel.invalidDateTime
+                      ? Colors.red.shade700
+                      : Colors.grey.shade500,
+                  width: 2,
                 ),
-                const Icon(
-                  Icons.calendar_month,
-                  color: Colors.black,
-                )
-              ],
+              ),
             ),
+            child: addTaskViewModel.date != null
+                ? Text(
+                    DateFormat('dd/MM/yyyy').format(addTaskViewModel.date!),
+                    style: TextStyles.defaultTextStyle,
+                  )
+                : Text(
+                    "Date",
+                    style: TextStyles.hintTextStyle,
+                  ),
           ),
         ),
         addTaskViewModel.invalidDateTime
             ? Padding(
-                padding: const EdgeInsets.only(top: 6, left: 11),
+                padding: const EdgeInsets.only(top: 6),
                 child: Text(
                   "Date can't be empty.",
                   style: TextStyle(

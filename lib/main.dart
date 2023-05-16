@@ -34,6 +34,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         theme: ThemeData(
           primarySwatch: Colors.blue,
+          scaffoldBackgroundColor: Colors.white,
         ),
         debugShowCheckedModeBanner: false,
         initialRoute: splash,

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:to_do_app/components/pencil_icon_container.dart';
 import 'package:to_do_app/view_models/add_task_view_model.dart';
 import 'package:to_do_app/view_models/home_screen_view_model.dart';
 
@@ -20,38 +21,32 @@ class TaskTile extends StatelessWidget {
   Widget build(BuildContext context) {
     AddTaskViewModel addTaskViewModel =
         Provider.of<AddTaskViewModel>(context, listen: false);
-    return Container(
-      decoration: BoxDecoration(
-          color: Colors.white, borderRadius: BorderRadius.circular(10)),
+    return SizedBox(
       height: MediaQuery.of(context).size.width * 0.15,
       width: MediaQuery.of(context).size.width,
       child: Slidable(
         key: ValueKey(task.id),
-        endActionPane: ActionPane(
-          extentRatio: 0.3,
-          motion: const StretchMotion(),
-          children: [
-            SlidableAction(
-              borderRadius: BorderRadius.circular(10),
-              spacing: 0,
-              onPressed: (context) async {
-                await showDialog(
-                  context: context,
-                  builder: (context) => AppAlertDialog(
-                    title: delete,
-                    content: confirmDelete,
-                    onPressedOk: () {
-                      addTaskViewModel.deleteTask(task.id);
-                    },
-                  ),
-                );
+        startActionPane: _buildActionPane(
+          addTaskViewModel,
+          complete,
+          (context) {
+            task.completed = !task.completed;
+            addTaskViewModel.updateTask(task);
+          },
+        ),
+        endActionPane: _buildActionPane(
+          addTaskViewModel,
+          delete,
+          (context) async => await showDialog(
+            context: context,
+            builder: (context) => AppAlertDialog(
+              title: delete,
+              content: confirmDelete,
+              onPressedOk: () {
+                addTaskViewModel.deleteTask(task.id);
               },
-              backgroundColor: Colors.white,
-              foregroundColor: Colors.red.shade600,
-              icon: Icons.delete,
-              label: delete,
             ),
-          ],
+          ),
         ),
         child: InkWell(
           onTap: () {
@@ -61,19 +56,7 @@ class TaskTile extends StatelessWidget {
           },
           child: Row(
             children: [
-              Transform.scale(
-                scale: 1.2,
-                child: Checkbox(
-                  value: task.completed,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  activeColor: Colors.purple,
-                  onChanged: (value) {
-                    task.completed = !task.completed;
-                    addTaskViewModel.updateTask(task);
-                  },
-                ),
-              ),
+              const PencilIconContainer(),
               const SizedBox(width: 20),
               Expanded(
                 child: Column(
@@ -90,7 +73,7 @@ class TaskTile extends StatelessWidget {
                     Text(
                       task.description,
                       softWrap: true,
-                      style: TextStyles.defaultLightTextStyle,
+                      style: TextStyles.defaultBoldLightTextStyle,
                       overflow: TextOverflow.clip,
                       maxLines: 1,
                     )
@@ -98,17 +81,46 @@ class TaskTile extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              Text(
-                DateFormat('dd/MM/yyyy').format(
-                  DateTime.parse(task.date),
+              Container(
+                padding: const EdgeInsets.only(top: 10),
+                alignment: Alignment.topCenter,
+                child: Text(
+                  DateFormat('dd/MM/yyyy').format(
+                    DateTime.parse(task.date),
+                  ),
+                  style: TextStyles.defaultLightTextStyle,
                 ),
-                style: TextStyles.lightText,
               ),
               const SizedBox(width: 10),
             ],
           ),
         ),
       ),
+    );
+  }
+
+  ActionPane _buildActionPane(AddTaskViewModel addTaskViewModel,
+      String actionType, Function(BuildContext) onPressed) {
+    return ActionPane(
+      extentRatio: 0.3,
+      motion: const StretchMotion(),
+      children: [
+        SlidableAction(
+          borderRadius: BorderRadius.circular(10),
+          spacing: 0,
+          onPressed: onPressed,
+          backgroundColor: Colors.white,
+          foregroundColor: actionType == delete
+              ? Colors.red.shade600
+              : Colors.green.shade600,
+          icon: actionType == delete ? Icons.delete : Icons.done,
+          label: actionType == delete
+              ? delete
+              : task.completed
+                  ? "Incomplete"
+                  : "Complete",
+        ),
+      ],
     );
   }
 }

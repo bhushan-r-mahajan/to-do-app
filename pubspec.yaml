@@ -21,7 +21,6 @@ dependencies:
   intl: ^0.18.1
   flutter_slidable: ^3.0.0
   percent_indicator: ^4.0.1
-  grouped_list: ^5.1.2
 
 dev_dependencies:
   flutter_test:

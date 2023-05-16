@@ -11,6 +11,8 @@ class AddTaskViewModel extends ChangeNotifier {
   final GlobalKey<FormState> _formkey = GlobalKey<FormState>();
   final _titleController = TextEditingController();
   final _descriptionController = TextEditingController();
+  final FocusNode _titleFieldFocus = FocusNode();
+  final FocusNode _descriptionFieldFocus = FocusNode();
   String _title = "";
   bool _completed = false;
   String _description = "";
@@ -18,9 +20,11 @@ class AddTaskViewModel extends ChangeNotifier {
   bool _isEditing = false;
   bool _loading = false;
   TodoServices todoServices = TodoServices();
+  bool _typing = false;
 
   //Getters
   bool get loading => _loading;
+  bool get typing => _typing;
   bool get completed => _completed;
   Task? get task => _task;
   DateTime? get date => _date;
@@ -31,10 +35,17 @@ class AddTaskViewModel extends ChangeNotifier {
   GlobalKey<FormState> get formkey => _formkey;
   get titleController => _titleController;
   get descriptionController => _descriptionController;
+  FocusNode get titleFieldFocus => _titleFieldFocus;
+  FocusNode get descriptionFieldFocus => _descriptionFieldFocus;
 
   //Setters
   setLoading(bool loading) async {
     _loading = loading;
+    notifyListeners();
+  }
+
+  setTyping(bool typing) async {
+    _typing = typing;
     notifyListeners();
   }
 
